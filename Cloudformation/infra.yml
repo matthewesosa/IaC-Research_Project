@@ -5,9 +5,29 @@ Parameters:
         Type: String
 
     VpcCIDR: 
-        Description: Please enter the IP range (CIDR notation) for this VPC)
+        Description: the IP range for the VPC
         Type: String
         Default: 10.0.0.0/16
+
+    pubSubnet1cidr:
+        Description: the IP range for the public subnet in AZ a
+        Type: String
+        Default: 10.0.1.0/24
+
+    pubSubnet2cidr:
+        Description: the IP range for the public subnet in AZ b
+        Type: String
+        Default: 10.0.2.0/24
+
+    privSubnet1cidr:
+        Description: the IP range for the private subnet in AZ a
+        Type: String
+        Default: 10.0.3.0/24
+
+    privSubnet2cidr:
+        Description: the IP range for the private subnet in AZ b
+        Type: String
+        Default: 10.0.4.0/24
     
 Resources:
 
@@ -19,3 +39,60 @@ Resources:
             Tags: 
                 - Key: Name 
                   Value: !Ref EnvironmentName
+
+    InternetGateway:
+        Type: AWS::EC2::InternetGateway
+        Properties:
+            Tags:
+                - Key: Name
+                  Value: !Ref EnvironmentName
+            
+    InternetGatewayAttachment:
+        Type: AWS::EC2::VPCGatewayAttachment
+        Properties:
+            InternetGatewayId: !Ref InternetGateway
+            VpcId: !Ref VPC
+
+    pubSubnet1: 
+        Type: AWS::EC2::Subnet
+        Properties:
+            VpcId: !Ref VPC
+            AvailabilityZone: !Select [ 0, !GetAZs '' ]
+            CidrBlock: !Ref pubSubnet1cidr
+            MapPublicIpOnLaunch: true
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} Public Subnet (AZ-a)
+
+    pubSubnet2: 
+        Type: AWS::EC2::Subnet
+        Properties:
+            VpcId: !Ref VPC
+            AvailabilityZone: !Select [ 1, !GetAZs '' ]
+            CidrBlock: !Ref pubSubnet2cidr
+            MapPublicIpOnLaunch: true
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} Public Subnet (AZ-b)
+
+    privSubnet1: 
+        Type: AWS::EC2::Subnet
+        Properties:
+            VpcId: !Ref VPC
+            AvailabilityZone: !Select [ 0, !GetAZs '' ]
+            CidrBlock: !Ref privSubnet1cidr
+            MapPublicIpOnLaunch: false
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} Private Subnet (AZ-a)
+
+    privSubnet2: 
+        Type: AWS::EC2::Subnet
+        Properties:
+            VpcId: !Ref VPC
+            AvailabilityZone: !Select [ 1, !GetAZs '' ]
+            CidrBlock: !Ref privSubnet2cidr
+            MapPublicIpOnLaunch: false
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName} Private Subnet (AZ-b)
