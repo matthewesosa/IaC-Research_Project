@@ -1,0 +1,50 @@
+Description: This template describes the webserver, security groups and other resources.
+
+Parameters:
+  EnvironmentName:
+    Description: the project name that will be at prefix of all defined resources.
+    Type: String
+  webServerAMIId:
+    Description: AMI ID used for the EC2 instances.
+    Type: String
+  InstanceType:
+    Description: EC2 instance type
+    Type: String
+
+Resources:
+
+  # Security Group for the Application Load Balancer (ALB)
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow all http traffic to the ALB
+      VpcId:
+        Fn::ImportValue: !Sub '${EnvironmentName}-VPCID'
+      SecurityGroupIngress: #Defining inbound traffic, protocol and ports
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress: #Defining outbound traffic, protocol and ports
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  # Security group for the ResearchProject webServer
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow only http to the webServer
+      VpcId:
+        Fn::ImportValue: !Sub '${EnvironmentName}-VPCID'
+      SecurityGroupIngress: #Defining inbound traffic, protocol and ports
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress: #Defining outbound traffic, protocol and ports
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0

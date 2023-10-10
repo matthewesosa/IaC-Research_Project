@@ -199,58 +199,58 @@ Outputs:
         Description: the created VPC for the project
         Value: !Ref VPC
         Export:
-          Name: !Sub "${AWS::StackName}-VPCID"
+          Name: !Sub ${EnvironmentName}-VPCID
 
     VPCPublicRouteTable:
         Description: Public Route
         Value: !Ref pubRT
         Export:
-          Name: !Sub "${AWS::StackName}-PUB-RT"
+          Name: !Sub ${EnvironmentName}-PUB-RT
 
     VPCPrivateRouteTable1:
         Description: Private Route AZ-a
         Value: !Ref privRT1
         Export:
-          Name: !Sub "${AWS::StackName}-PRIV-RT1"
+          Name: !Sub ${EnvironmentName}-PRIV-RT1
 
     VPCPrivateRouteTable2:
         Description: Private Route AZ-b
         Value: !Ref privRT2
         Export:
-          Name: !Sub "${AWS::StackName}-PRIV-RT2"
+          Name: !Sub ${EnvironmentName}-PRIV-RT2
 
     PublicSubnets:
         Description: all public subnets
         Value: !Join [ ",", [ !Ref pubSubnet1, !Ref pubSubnet2 ]]
         Export:
-          Name: !Sub "${AWS::StackName}-PUB-NETS"
+          Name: !Sub "${EnvironmentName}-PUB-NETS"
 
     PrivateSubnets:
         Description: all private subnets
         Value: !Join [ ",", [ !Ref privSubnet1, !Ref privSubnet2 ]]
         Export:
-          Name: !Sub "${AWS::StackName}-PRIV-NETS"
+          Name: !Sub ${EnvironmentName}-PRIV-NETS
 
     PublicSubnet1:
         Description: the public subnet in AZ(a)
         Value: !Ref pubSubnet1
         Export:
-          Name: !Sub "${AWS::StackName}-PUB"
+          Name: !Sub ${EnvironmentName}-PUB
 
     PublicSubnet2: 
         Description: the public subnet in AZ(b)
         Value: !Ref pubSubnet2
         Export:
-          Name: !Sub "${AWS::StackName}-PUB-SUBNET-AZ"
+          Name: !Sub ${EnvironmentName}-PUB-SUBNET-AZ
 
     PrivateSubnet1:
         Description: the private subnet in AZ(a)
         Value: !Ref privSubnet1
         Export:
-          Name: !Sub "${AWS::StackName}-PRIV-SUBNET-AZ-a"
+          Name: !Sub ${EnvironmentName}-PRIV-SUBNET-AZ-a
 
     PrivateSubnet2: 
         Description: the private subnet in  AZ(b)
         Value: !Ref privSubnet2
         Export:
-          Name: !Sub "${AWS::StackName}-PRIV-SUBNET-AZ-b"
+          Name: !Sub ${EnvironmentName}-PRIV-SUBNET-AZ-b
