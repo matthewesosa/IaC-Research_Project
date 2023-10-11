@@ -11,15 +11,15 @@ Parameters:
     Description: EC2 instance type
     Type: String
 
-Resources:
 
+Resources:
   # Security Group for the Application Load Balancer (ALB)
   ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow all http traffic to the ALB
       VpcId:
-        Fn::ImportValue: !Sub '${EnvironmentName}-VPCID'
+        Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
       SecurityGroupIngress: #Defining inbound traffic, protocol and ports
         - IpProtocol: tcp
           FromPort: 80
@@ -31,13 +31,13 @@ Resources:
           ToPort: 80
           CidrIp: 0.0.0.0/0
 
-  # Security group for the ResearchProject webServer
-  WebServerSecurityGroup:
+  # Security group for the ResearchProject webServers(EC2 instances)
+  webServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow only http to the webServer
       VpcId:
-        Fn::ImportValue: !Sub '${EnvironmentName}-VPCID'
+        Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
       SecurityGroupIngress: #Defining inbound traffic, protocol and ports
         - IpProtocol: tcp
           FromPort: 80
@@ -48,3 +48,73 @@ Resources:
           FromPort: 0
           ToPort: 65535
           CidrIp: 0.0.0.0/0
+
+ ## IAM Roles/Policies 
+
+  # Assigning an IAM role to the webServer(s)(EC2 instance(s)) that allows it to access S3 .
+  S3BucketRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: '/'
+
+  # An IAM instance profile
+  S3BucketInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: '/'
+      Roles:
+        - Ref: S3BucketRole
+
+  # this IAM policy permits the webServer(s)(EC2 instance(s)) to list items in S3
+  S3BucketPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3BucketPolicy
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: '*'
+      Roles:
+        - Ref: S3BucketRole
+
+
+
+  ## The Launch Configuration for the Autoscaling Group 
+
+  # This launch configuration will be used each time a webServer(EC2) is spin up in the autoscaling group.
+  WebServerLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          apt-get update -y
+          apt-get install unzip awscli -y
+          apt-get install apache2 -y
+          systemctl start apache2.service
+          cd /var/www/html
+          aws s3 cp s3://iac-webappbucket/index.html .
+      ImageId: !Ref webServerAMIId
+      IamInstanceProfile: !Ref S3BucketInstanceProfile
+      SecurityGroups:
+        - Ref: WebServerSecurityGroup
+      InstanceType: !Ref InstanceType
+      BlockDeviceMappings:
+        - DeviceName: '/dev/sdk'
+          Ebs:
+            VolumeSize: '10'
+
+
+ 
+
