@@ -2,5 +2,13 @@
 	{
 		"ParameterKey": "EnvironmentName",
 		"ParameterValue": "IaC-ResearchProject"
+	},
+	{
+		"ParameterKey": "webServerAMIId",
+		"ParameterValue": "ami-0ee8244746ec5d6d4"
+	},
+	{
+		"ParameterKey": "InstanceType",
+		"ParameterValue": "t3.medium"
 	}
 ]

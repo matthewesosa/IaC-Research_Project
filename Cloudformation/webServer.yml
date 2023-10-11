@@ -108,7 +108,7 @@ Resources:
       ImageId: !Ref webServerAMIId
       IamInstanceProfile: !Ref S3BucketInstanceProfile
       SecurityGroups:
-        - Ref: WebServerSecurityGroup
+        - Ref: webServerSecurityGroup
       InstanceType: !Ref InstanceType
       BlockDeviceMappings:
         - DeviceName: '/dev/sdk'
