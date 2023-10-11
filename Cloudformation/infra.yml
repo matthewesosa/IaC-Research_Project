@@ -235,13 +235,13 @@ Outputs:
         Description: the public subnet in AZ(a)
         Value: !Ref pubSubnet1
         Export:
-          Name: !Sub ${EnvironmentName}-PUB
+          Name: !Sub ${EnvironmentName}-PUB-SUBNET-AZ-a
 
     PublicSubnet2: 
         Description: the public subnet in AZ(b)
         Value: !Ref pubSubnet2
         Export:
-          Name: !Sub ${EnvironmentName}-PUB-SUBNET-AZ
+          Name: !Sub ${EnvironmentName}-PUB-SUBNET-AZ-b
 
     PrivateSubnet1:
         Description: the private subnet in AZ(a)

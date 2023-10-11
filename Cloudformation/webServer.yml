@@ -93,7 +93,7 @@ Resources:
   ## The Launch Configuration for the Autoscaling Group 
 
   # This launch configuration will be used each time a webServer(EC2) is spin up in the autoscaling group.
-  WebServerLaunchConfig:
+  webServerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       UserData:
@@ -114,6 +114,93 @@ Resources:
         - DeviceName: '/dev/sdk'
           Ebs:
             VolumeSize: '10'
+
+        
+
+ ## Defining the autoscaling group
+
+  # AutoSscaling group for the IaC-ResearchProject
+  WebServerGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - Fn::ImportValue: !Sub '${EnvironmentName}-PRIV-NETS'
+      LaunchConfigurationName:
+        Ref: webServerLaunchConfig
+      MinSize: '4'
+      MaxSize: '6'
+      TargetGroupARNs:
+        - Ref: ALBTargetGroup
+
+
+  ## Load Balancer ##
+
+  # Defining an Application Load Balancer(ALB) for both public subnets with the alreday defined load balancer security group attached
+  webServerALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets:
+        - Fn::ImportValue: !Sub '${EnvironmentName}-PUB-SUBNET-AZ-a'
+        - Fn::ImportValue: !Sub '${EnvironmentName}-PUB-SUBNET-AZ-b'
+      SecurityGroups:
+        - Ref: ALBSecurityGroup
+
+
+
+  ## Defining a 'Listner' for the Application Load Balancer(ALB) 
+
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: ALBTargetGroup
+      LoadBalancerArn:
+        Ref: webServerALB
+      Port: '80'
+      Protocol: HTTP
+
+  ##  Listener Rule for the Application Load Balancer
+
+  ALBListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref 'ALBTargetGroup'
+      Conditions:
+        - Field: path-pattern
+          Values: [/]
+      ListenerArn: !Ref 'Listener'
+      Priority: 1
+
+
+  ## Target Group
+
+  # The ALB target group that all the running webServers(EC2 instances should belong to);
+  # the ALB also performs health  checks on the webServers on the  / path for response code 200 in every 10 seconds interval
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 8
+      HealthyThresholdCount: 2
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 5
+      VpcId:
+        Fn::ImportValue:
+          Fn::Sub: '${EnvironmentName}-VPCID'
+
+Outputs:
+  webSeverALBDNSName:
+    Description: DNS name/public URL of the Application Load Balancer
+    Value: !Join ['', ['http://', !GetAtt webServerALB.DNSName]]
+    Export:
+      Name: !Sub ${EnvironmentName}-ALB-DNSName
 
 
  
