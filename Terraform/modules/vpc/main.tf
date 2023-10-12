@@ -74,10 +74,10 @@ resource "aws_route_table_association" "pub-sub-2-b_route_table_association" {
 }
 
 # defining private subnet in AZ-a, priv-sub-3a
-resource "aws_subnet" "pri_sub_3a" {
+resource "aws_subnet" "priv_sub_3a" {
   vpc_id                   = aws_vpc.vpc.id
   cidr_block               = var.priv_sub_3a_cidr
-  availability_zone        = data.aws_availability_zones.available_zones.names[0]
+  availability_zone        = data.aws_availability_zones.az-list.names[0]
   map_public_ip_on_launch  = false  #this is a private subnet
 
   tags      = {
