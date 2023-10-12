@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket = "tfstate-matthew-01"
-    key    = "backend/iac-research_project.tfstate"
-    region = "us-east-1"
-    dynamodb_table = "iac-research_project-remote-backend"
+    bucket = "iac-webappBucket"
+    key    = "backend/iac-researchproject.tfstate"
+    region = "eu-central-1"
+    dynamodb_table = "iac-researchproject-remote-backend"
   }
 }

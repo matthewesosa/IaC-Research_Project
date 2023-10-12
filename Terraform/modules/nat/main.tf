@@ -16,7 +16,7 @@ resource "aws_eip" "eip-nat-b" {
   }
 }
 
-# nat in public subnet pub_sub_1a
+# nat in public subnet pub_sub_1a in AZ-a
 resource "aws_nat_gateway" "nat-a" {
   allocation_id = aws_eip.eip-nat-a.id
   subnet_id     = var.pub_sub_1a_id
@@ -29,7 +29,7 @@ resource "aws_nat_gateway" "nat-a" {
   depends_on = [var.igw_id]
 }
 
-# nat in public subnet pub_sub_1b
+# nat in public subnet pub_sub_2b in AZ-b
 resource "aws_nat_gateway" "nat-b" {
   allocation_id = aws_eip.eip-nat-b.id
   subnet_id     = var.pub_sub_2b_id
