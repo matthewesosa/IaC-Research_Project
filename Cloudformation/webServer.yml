@@ -49,12 +49,14 @@ Resources:
           ToPort: 65535
           CidrIp: 0.0.0.0/0
 
- ## IAM Roles/Policies 
 
+
+  ## IAM Roles/Policies 
   # Assigning an IAM role to the webServer(s)(EC2 instance(s)) that allows it to access S3 .
   S3BucketRole:
     Type: AWS::IAM::Role
     Properties:
+      RoleName: !Sub ${EnvironmentName}-Role
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -83,10 +85,14 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - s3:*
-            Resource: '*'
+              - s3:Get*
+              - s3:List*
+            Resource:
+              - arn:aws:s3:::iac-webappbucket
+              - arn:aws:s3:::iac-webappbucket/*
       Roles:
         - Ref: S3BucketRole
+
 
 
 
@@ -106,7 +112,7 @@ Resources:
           cd /var/www/html
           aws s3 cp s3://iac-webappbucket/index.html .
       ImageId: !Ref webServerAMIId
-      IamInstanceProfile: !Ref S3BucketInstanceProfile
+      #IamInstanceProfile: !Ref S3BucketInstanceProfile
       SecurityGroups:
         - Ref: webServerSecurityGroup
       InstanceType: !Ref InstanceType
