@@ -2,4 +2,4 @@
 
 #
 
-![](IaC-ResearchProject.png)
+![](images/IaC-ResearchProject.png)
