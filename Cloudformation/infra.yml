@@ -1,6 +1,6 @@
 Parameters:
 
-    EnvironmentName:
+    ProjectName:
         Description: An environment name that will be prefixed to resource names
         Type: String
 
@@ -38,14 +38,14 @@ Resources:
             EnableDnsHostnames: true
             Tags: 
                 - Key: Name 
-                  Value: !Ref EnvironmentName
+                  Value: !Ref ProjectName
 
     InternetGateway:
         Type: AWS::EC2::InternetGateway
         Properties:
             Tags:
                 - Key: Name
-                  Value: !Ref EnvironmentName
+                  Value: !Ref ProjectName
             
     InternetGatewayAttachment:
         Type: AWS::EC2::VPCGatewayAttachment
@@ -62,7 +62,7 @@ Resources:
             MapPublicIpOnLaunch: true
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} Public Subnet (AZ-a)
+                  Value: !Sub ${ProjectName} Public Subnet (AZ-a)
 
     pubSubnet2: 
         Type: AWS::EC2::Subnet
@@ -73,7 +73,7 @@ Resources:
             MapPublicIpOnLaunch: true
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} Public Subnet (AZ-b)
+                  Value: !Sub ${ProjectName} Public Subnet (AZ-b)
 
     privSubnet1: 
         Type: AWS::EC2::Subnet
@@ -84,7 +84,7 @@ Resources:
             MapPublicIpOnLaunch: false
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} Private Subnet (AZ-a)
+                  Value: !Sub ${ProjectName} Private Subnet (AZ-a)
 
     privSubnet2: 
         Type: AWS::EC2::Subnet
@@ -95,7 +95,7 @@ Resources:
             MapPublicIpOnLaunch: false
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} Private Subnet (AZ-b)
+                  Value: !Sub ${ProjectName} Private Subnet (AZ-b)
 
     Nat1EIP:
         Type: AWS::EC2::EIP
@@ -128,7 +128,7 @@ Resources:
             VpcId: !Ref VPC
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} Public Routes
+                  Value: !Sub ${ProjectName} Public Routes
 
     DefaultPublicRoute: 
         Type: AWS::EC2::Route
@@ -157,7 +157,7 @@ Resources:
             VpcId: !Ref VPC
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} Private Routes (AZ-a)
+                  Value: !Sub ${ProjectName} Private Routes (AZ-a)
 
     DefaultPrivateRoute1:
         Type: AWS::EC2::Route
@@ -178,7 +178,7 @@ Resources:
             VpcId: !Ref VPC
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} Private Routes (AZ-b)
+                  Value: !Sub ${ProjectName} Private Routes (AZ-b)
 
     DefaultPrivateRoute2:
         Type: AWS::EC2::Route
@@ -199,58 +199,58 @@ Outputs:
         Description: the created VPC for the project
         Value: !Ref VPC
         Export:
-          Name: !Sub ${EnvironmentName}-VPCID
+          Name: !Sub ${ProjectName}-VPCID
 
     VPCPublicRouteTable:
         Description: Public Route
         Value: !Ref pubRT
         Export:
-          Name: !Sub ${EnvironmentName}-PUB-RT
+          Name: !Sub ${ProjectName}-PUB-RT
 
     VPCPrivateRouteTable1:
         Description: Private Route AZ-a
         Value: !Ref privRT1
         Export:
-          Name: !Sub ${EnvironmentName}-PRIV-RT1
+          Name: !Sub ${ProjectName}-PRIV-RT1
 
     VPCPrivateRouteTable2:
         Description: Private Route AZ-b
         Value: !Ref privRT2
         Export:
-          Name: !Sub ${EnvironmentName}-PRIV-RT2
+          Name: !Sub ${ProjectName}-PRIV-RT2
 
     PublicSubnets:
         Description: all public subnets
         Value: !Join [ ",", [ !Ref pubSubnet1, !Ref pubSubnet2 ]]
         Export:
-          Name: !Sub "${EnvironmentName}-PUB-NETS"
+          Name: !Sub "${ProjectName}-PUB-NETS"
 
     PrivateSubnets:
         Description: all private subnets
         Value: !Join [ ",", [ !Ref privSubnet1, !Ref privSubnet2 ]]
         Export:
-          Name: !Sub ${EnvironmentName}-PRIV-NETS
+          Name: !Sub ${ProjectName}-PRIV-NETS
 
     PublicSubnet1:
         Description: the public subnet in AZ(a)
         Value: !Ref pubSubnet1
         Export:
-          Name: !Sub ${EnvironmentName}-PUB-SUBNET-AZ-a
+          Name: !Sub ${ProjectName}-PUB-SUBNET-AZ-a
 
     PublicSubnet2: 
         Description: the public subnet in AZ(b)
         Value: !Ref pubSubnet2
         Export:
-          Name: !Sub ${EnvironmentName}-PUB-SUBNET-AZ-b
+          Name: !Sub ${ProjectName}-PUB-SUBNET-AZ-b
 
     PrivateSubnet1:
         Description: the private subnet in AZ(a)
         Value: !Ref privSubnet1
         Export:
-          Name: !Sub ${EnvironmentName}-PRIV-SUBNET-AZ-a
+          Name: !Sub ${ProjectName}-PRIV-SUBNET-AZ-a
 
     PrivateSubnet2: 
         Description: the private subnet in  AZ(b)
         Value: !Ref privSubnet2
         Export:
-          Name: !Sub ${EnvironmentName}-PRIV-SUBNET-AZ-b
+          Name: !Sub ${ProjectName}-PRIV-SUBNET-AZ-b

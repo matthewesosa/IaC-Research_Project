@@ -1,7 +1,7 @@
 Description: This template describes the webserver, security groups and other resources.
 
 Parameters:
-  EnvironmentName:
+  ProjectName:
     Description: the project name that will be at prefix of all defined resources.
     Type: String
   webServerAMIId:
@@ -19,7 +19,7 @@ Resources:
     Properties:
       GroupDescription: Allow all http traffic to the ALB
       VpcId:
-        Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+        Fn::ImportValue: !Sub "${ProjectName}-VPCID"
       SecurityGroupIngress: #Defining inbound traffic, protocol and ports
         - IpProtocol: tcp
           FromPort: 80
@@ -37,7 +37,7 @@ Resources:
     Properties:
       GroupDescription: Allow only http to the webServer
       VpcId:
-        Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+        Fn::ImportValue: !Sub "${ProjectName}-VPCID"
       SecurityGroupIngress: #Defining inbound traffic, protocol and ports
         - IpProtocol: tcp
           FromPort: 80
@@ -56,7 +56,7 @@ Resources:
   S3BucketRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${EnvironmentName}-Role
+      RoleName: !Sub ${ProjectName}-Role
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -130,7 +130,7 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-        - Fn::ImportValue: !Sub '${EnvironmentName}-PRIV-NETS'
+        - Fn::ImportValue: !Sub '${ProjectName}-PRIV-NETS'
       LaunchConfigurationName:
         Ref: webServerLaunchConfig
       MinSize: '4'
@@ -146,8 +146,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-        - Fn::ImportValue: !Sub '${EnvironmentName}-PUB-SUBNET-AZ-a'
-        - Fn::ImportValue: !Sub '${EnvironmentName}-PUB-SUBNET-AZ-b'
+        - Fn::ImportValue: !Sub '${ProjectName}-PUB-SUBNET-AZ-a'
+        - Fn::ImportValue: !Sub '${ProjectName}-PUB-SUBNET-AZ-b'
       SecurityGroups:
         - Ref: ALBSecurityGroup
 
@@ -199,14 +199,14 @@ Resources:
       UnhealthyThresholdCount: 5
       VpcId:
         Fn::ImportValue:
-          Fn::Sub: '${EnvironmentName}-VPCID'
+          Fn::Sub: '${ProjectName}-VPCID'
 
 Outputs:
   webSeverALBDNSName:
     Description: DNS name/public URL of the Application Load Balancer
     Value: !Join ['', ['http://', !GetAtt webServerALB.DNSName]]
     Export:
-      Name: !Sub ${EnvironmentName}-ALB-DNSName
+      Name: !Sub ${ProjectName}-ALB-DNSName
 
 
  
