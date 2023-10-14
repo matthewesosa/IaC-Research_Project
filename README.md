@@ -1,6 +1,6 @@
 # Terraform and Cloudformation: A Comparative Study of Infrasture as Code Tools on AWS
 
-The goal of this research project is to study and evaluate the effectiveness of these two IaC tools for automating the deployment of cloud infrastructures; and determine which is better suited using a specific case study of deploying a 'High Availability WebApp Architecture'
+The goal of this research project is to study and evaluate the effectiveness of these two IaC tools for automating the provisioning of cloud infrastructures; and determine which is better suited using a specific case study of deploying a 'High Availability WebApp Architecture'
 #
 The research aims to answer the following questions:
 #
