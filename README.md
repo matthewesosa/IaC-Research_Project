@@ -5,7 +5,7 @@ Organizations frequently choose to utilize cloud provisioning/configuration mana
 [Flexera State of the Cloud Report 2022](https://path.flexera.com/cm/report-state-of-the-) 
 #
 
-The goal of this research project is to study and evaluate the effectiveness of these two Infrastructure as Code tools for automating the provisioning of cloud infrastructures; and determine which is better suited using a specific case study of deploying a 'High Availability WebApp Architecture'on AWS.
+The goal of this research project is to study and evaluate the effectiveness of these two Infrastructure as Code tools for automating the provisioning of cloud infrastructures; and determine which is better suited using a specific case study of deploying a 'High Availability WebApp Architecture' on AWS.
 #
 The research aims to answer the following questions:
 #
