@@ -1,0 +1,7 @@
+region = "eu-central-1"
+project_name = "IaC-ResearchProject"
+vpc_cidr         = "10.0.0.0/16"
+pub_sub_1a_cidr = "10.0.1.0/24"
+pub_sub_2b_cidr = "10.0.2.0/24"
+priv_sub_3a_cidr = "10.0.3.0/24"
+priv_sub_4b_cidr = "10.0.4.0/24"
