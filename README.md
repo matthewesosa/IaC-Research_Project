@@ -6,7 +6,7 @@ Organizations often opt for cloud provisioning and configuration management tool
 According to the "Flexera State of the Cloud Report 2022," a substantial 50% of organizations have already embraced AWS CloudFormation in their infrastructure operations, with an additional 20% in the planning stages of its adoption. Similarly, Terraform has found favor with 30% of organizations, and an extra 20% are actively considering its implementation. [Flexera State of the Cloud Report 2022](https://path.flexera.com/cm/report-state-of-the-) 
 #
 
-The goal of this research project is to study and evaluate the effectiveness of these two Infrastructure as Code tools for automating the provisioning of cloud infrastructures; and determine which is better suited using a specific case study of deploying a 'High Availability WebApp Architecture' on AWS.
+The goal of this research project is to study and evaluate the effectiveness of these two Infrastructure as Code tools for automating the provisioning of cloud infrastructures; and determine which is better suited using a specific case study of provisioning a 'High Availability WebApp Architecture' on AWS.
 #
 The research aims to answer the following questions:
 
