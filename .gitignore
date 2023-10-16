@@ -1,6 +1,7 @@
 # Terraform
-/.terraform/
+**/.terraform/*
 *.tfstate
+*.tfstate.*
 *.tfstate.backup
 *.terraform.lock.hcl
 *.tfvars
@@ -14,3 +15,8 @@
 
 # Ignore this file:
 login.sh
+
+
+# Crash log files
+crash.log
+crash.*.log
