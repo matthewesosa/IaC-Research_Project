@@ -10,9 +10,19 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
+  username:
+    Description: db username
+    Type: String 
+  password:
+    Description: db password
+    Type: String  
+
+
+
 
 
 Resources:
+
   # Security Group for the Application Load Balancer (ALB)
   ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -48,6 +58,37 @@ Resources:
           FromPort: 0
           ToPort: 65535
           CidrIp: 0.0.0.0/0
+
+
+  dbSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties: 
+      DBSubnetGroupDescription: "Subnet group for RDS"
+      DBSubnetGroupName: "Subnet Group"
+      SubnetIds:
+        - Fn::ImportValue: !Sub '${ProjectName}-PRIV-SUBNET-AZ-a'
+        - Fn::ImportValue: !Sub '${ProjectName}-PRIV-SUBNET-AZ-b'
+
+  mydb: 
+    Type: "AWS::RDS::DBInstance"
+    Properties: 
+      VPCSecurityGroups:
+        - Ref: webServerSecurityGroup
+        - Ref: ALBSecurityGroup
+      PubliclyAccessible: false
+      MultiAZ: true
+      AllocatedStorage: 20
+      DBInstanceClass: db.t2.small
+      Engine: "mysql"
+      DBName: "test"
+      MasterUsername: !Sub "${username}"
+      MasterUserPassword: !Sub "${password}"
+      DBSubnetGroupName: !Ref dbSubnetGroup
+      Tags: 
+        - 
+          Key: "Name"
+          Value: !Sub "${ProjectName} MySQL RDS"
+#    DeletionPolicy: "Retain"
 
 
 
@@ -105,12 +146,14 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          apt-get update -y
-          apt-get install unzip awscli -y
-          apt-get install apache2 -y
-          systemctl start apache2.service
-          cd /var/www/html
-          aws s3 cp s3://iac-webappbucket/index.html .
+          echo "export DB_ENDPOINT=${mydb.Endpoint.Address}"
+          sudo yum update -y
+          sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+          sudo yum install -y httpd mariadb-server
+          sudo systemctl start httpd
+          sudo systemctl enable httpd
+          sudo systemctl is-enabled httpd
+          sudo aws s3 cp s3://iac-webappbucket --region eu-central-1 /var/www/html/ --recursive
       ImageId: !Ref webServerAMIId
       #IamInstanceProfile: !Ref S3BucketInstanceProfile
       SecurityGroups:
@@ -202,12 +245,27 @@ Resources:
           Fn::Sub: '${ProjectName}-VPCID'
 
 Outputs:
-  webSeverALBDNSName:
+  webServerALBDNSName:
     Description: DNS name/public URL of the Application Load Balancer
     Value: !Join ['', ['http://', !GetAtt webServerALB.DNSName]]
     Export:
       Name: !Sub ${ProjectName}-ALB-DNSName
 
+  dbInstanceEndpoint:
+    Description: "Endpoint of the Mysql db Instance"
+    Value: !GetAtt mydb.Endpoint.Address
+
+  #webServerSecurityGroup-id:
+    #Description: the id of the webServerSecurityGroup
+    #Value: !Ref 'WebServerSecurityGroup'
+    #Export:
+      #Name: !Sub ${ProjectName}-webServerSecurityGroup-id
+
+  #ALBSecurityGroup-id:
+    #Description: the id of the ALBSecurityGroup 
+    #Value: !Ref 'ALBSecurityGroup'
+    #Export:
+      #Name: !Sub ${ProjectName}-ALBSecurityGroup-id
 
  
 
