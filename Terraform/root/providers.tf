@@ -10,5 +10,5 @@ terraform {
 provider "aws" {
   # Configuration options
   region  = var.region
-  profile = "226915686048_PowerUserAccess"
+  profile = "mypassrole"
 }
