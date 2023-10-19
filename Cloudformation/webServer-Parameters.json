@@ -5,10 +5,18 @@
 	},
 	{
 		"ParameterKey": "webServerAMIId",
-		"ParameterValue": "ami-04e601abe3e1a910f"
+		"ParameterValue": "ami-0fb820135757d28fd"
 	},
 	{
 		"ParameterKey": "InstanceType",
 		"ParameterValue": "t3.medium"
+	},
+	{
+		"ParameterKey": "username",
+		"ParameterValue": "admin"
+	},
+	{
+		"ParameterKey": "password",
+		"ParameterValue": "matthew-123"
 	}
 ]
