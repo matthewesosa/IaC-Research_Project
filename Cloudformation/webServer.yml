@@ -60,6 +60,20 @@ Resources:
           CidrIp: 0.0.0.0/0
 
 
+  dbSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow all traffic to the db
+      VpcId:
+        Fn::ImportValue: !Sub "${ProjectName}-VPCID"
+      SecurityGroupIngress: #Defining inbound traffic, protocol and ports
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref webServerSecurityGroup
+
+
+
   dbSubnetGroup:
     Type: "AWS::RDS::DBSubnetGroup"
     Properties: 
@@ -73,11 +87,10 @@ Resources:
     Type: "AWS::RDS::DBInstance"
     Properties: 
       VPCSecurityGroups:
-        - Ref: webServerSecurityGroup
-        - Ref: ALBSecurityGroup
+        - Ref: dbSecurityGroup
       PubliclyAccessible: false
       MultiAZ: true
-      AllocatedStorage: 20
+      AllocatedStorage: 10
       DBInstanceClass: db.t2.small
       Engine: "mysql"
       DBName: "test"
@@ -94,10 +107,10 @@ Resources:
 
   ## IAM Roles/Policies 
   # Assigning an IAM role to the webServer(s)(EC2 instance(s)) that allows it to access S3 .
-  S3BucketRole:
+  S3BucketRole2:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${ProjectName}-Role
+      RoleName: !Sub ${ProjectName}-Role2
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -109,19 +122,19 @@ Resources:
               - sts:AssumeRole
       Path: '/'
 
-  # An IAM instance profile
-  S3BucketInstanceProfile:
+   #An IAM instance profile
+  S3BucketInstanceProfile2:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: '/'
       Roles:
-        - Ref: S3BucketRole
+        - Ref: S3BucketRole2
 
   # this IAM policy permits the webServer(s)(EC2 instance(s)) to list items in S3
-  S3BucketPolicy:
+  S3BucketPolicy2:
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: S3BucketPolicy
+      PolicyName: S3BucketPolicy2
       PolicyDocument:
         Statement:
           - Effect: Allow
@@ -132,7 +145,7 @@ Resources:
               - arn:aws:s3:::iac-webappbucket
               - arn:aws:s3:::iac-webappbucket/*
       Roles:
-        - Ref: S3BucketRole
+        - Ref: S3BucketRole2
 
 
 
@@ -146,16 +159,15 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          echo "export DB_ENDPOINT=${mydb.Endpoint.Address}"
-          sudo yum update -y
-          sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
-          sudo yum install -y httpd mariadb-server
-          sudo systemctl start httpd
-          sudo systemctl enable httpd
-          sudo systemctl is-enabled httpd
+          yum update -y
+          amazon-linux-extras enable php7.2
+          yum clean metadata
+          yum install -y httpd php php-mysqlnd
+          service httpd start
+          chkconfig httpd on
           sudo aws s3 cp s3://iac-webappbucket --region eu-central-1 /var/www/html/ --recursive
       ImageId: !Ref webServerAMIId
-      #IamInstanceProfile: !Ref S3BucketInstanceProfile
+      IamInstanceProfile: !Ref S3BucketInstanceProfile2
       SecurityGroups:
         - Ref: webServerSecurityGroup
       InstanceType: !Ref InstanceType
@@ -176,7 +188,7 @@ Resources:
         - Fn::ImportValue: !Sub '${ProjectName}-PRIV-NETS'
       LaunchConfigurationName:
         Ref: webServerLaunchConfig
-      MinSize: '4'
+      MinSize: '2'
       MaxSize: '6'
       TargetGroupARNs:
         - Ref: ALBTargetGroup
@@ -254,6 +266,8 @@ Outputs:
   dbInstanceEndpoint:
     Description: "Endpoint of the Mysql db Instance"
     Value: !GetAtt mydb.Endpoint.Address
+    Export:
+      Name: !Sub ${ProjectName}-mydb-Endpoint
 
   #webServerSecurityGroup-id:
     #Description: the id of the webServerSecurityGroup
