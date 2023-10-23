@@ -10,14 +10,6 @@ Parameters:
   InstanceType:
     Description: EC2 instance type
     Type: String
-  username:
-    Description: db username
-    Type: String 
-  password:
-    Description: db password
-    Type: String  
-
-
 
 
 
@@ -60,48 +52,7 @@ Resources:
           CidrIp: 0.0.0.0/0
 
 
-  dbSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow all traffic to the db
-      VpcId:
-        Fn::ImportValue: !Sub "${ProjectName}-VPCID"
-      SecurityGroupIngress: #Defining inbound traffic, protocol and ports
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
-          SourceSecurityGroupId: !Ref webServerSecurityGroup
 
-
-
-  dbSubnetGroup:
-    Type: "AWS::RDS::DBSubnetGroup"
-    Properties: 
-      DBSubnetGroupDescription: "Subnet group for RDS"
-      DBSubnetGroupName: "Subnet Group"
-      SubnetIds:
-        - Fn::ImportValue: !Sub '${ProjectName}-PRIV-SUBNET-AZ-a'
-        - Fn::ImportValue: !Sub '${ProjectName}-PRIV-SUBNET-AZ-b'
-
-  mydb: 
-    Type: "AWS::RDS::DBInstance"
-    Properties: 
-      VPCSecurityGroups:
-        - Ref: dbSecurityGroup
-      PubliclyAccessible: false
-      MultiAZ: true
-      AllocatedStorage: 10
-      DBInstanceClass: db.t2.small
-      Engine: "mysql"
-      DBName: "test"
-      MasterUsername: !Sub "${username}"
-      MasterUserPassword: !Sub "${password}"
-      DBSubnetGroupName: !Ref dbSubnetGroup
-      Tags: 
-        - 
-          Key: "Name"
-          Value: !Sub "${ProjectName} MySQL RDS"
-#    DeletionPolicy: "Retain"
 
 
 
@@ -263,11 +214,7 @@ Outputs:
     Export:
       Name: !Sub ${ProjectName}-ALB-DNSName
 
-  dbInstanceEndpoint:
-    Description: "Endpoint of the Mysql db Instance"
-    Value: !GetAtt mydb.Endpoint.Address
-    Export:
-      Name: !Sub ${ProjectName}-mydb-Endpoint
+
 
   #webServerSecurityGroup-id:
     #Description: the id of the webServerSecurityGroup
