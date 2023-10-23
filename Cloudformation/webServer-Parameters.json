@@ -10,13 +10,6 @@
 	{
 		"ParameterKey": "InstanceType",
 		"ParameterValue": "t3.medium"
-	},
-	{
-		"ParameterKey": "username",
-		"ParameterValue": "admin"
-	},
-	{
-		"ParameterKey": "password",
-		"ParameterValue": "matthew-123"
 	}
+
 ]
