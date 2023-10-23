@@ -1,0 +1,17 @@
+[
+	{
+		"ParameterKey": "ProjectName",
+		"ParameterValue": "IaC-ResearchProject"
+	},
+
+	{
+		"ParameterKey": "username",
+		"ParameterValue": "admin"
+	},
+
+	{
+		"ParameterKey": "password",
+		"ParameterValue": "matthew-123"
+	}
+
+]
