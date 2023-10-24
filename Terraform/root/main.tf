@@ -26,10 +26,10 @@ module "security-group" {
 }
 
 module "database" {
-  source         = "../modules/rds"
+  source         = "../modules/database"
   mydb_sg_id       = module.security-group.mydb_sg_id
   priv_sub_3a_id = module.vpc.priv_sub_3a_id
   priv_sub_4b_id = module.vpc.priv_sub_4b_id
-  db_username    = var.db_username
-  db_password    = var.db_password
+  mydb_username    = var.mydb_username
+  mydb_password    = var.mydb_password
 }
