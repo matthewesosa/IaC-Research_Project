@@ -19,3 +19,17 @@ module "nat" {
   priv_sub_3a_id = module.vpc.priv_sub_3a_id
   priv_sub_4b_id = module.vpc.priv_sub_4b_id
 }
+
+module "security-group" {
+  source = "../modules/security-group"
+  vpc_id = module.vpc.vpc_id
+}
+
+module "database" {
+  source         = "../modules/rds"
+  db_sg_id       = module.security-group.db_sg_id
+  priv_sub_3a_id = module.vpc.priv_sub_3a_id
+  priv_sub_4b_id = module.vpc.priv_sub_4b_id
+  db_username    = var.db_username
+  db_password    = var.db_password
+}
