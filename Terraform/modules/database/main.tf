@@ -7,7 +7,7 @@ resource "aws_db_instance" "mydb" {
   identifier              = "testdb-instance"
   engine                  = "mysql"
   instance_class          = "db.t2.small"
-  allocated_storage       = 20
+  allocated_storage       = 10
   username                = var.mydb_username
   password                = var.mydb_password
   multi_az                = true
