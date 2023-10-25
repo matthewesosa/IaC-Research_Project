@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "mydb-subnet" {
   name       = var.mydb_sub_name
-  subnet_ids = [var.priv_sub_3a_id, var.priv_sub_4b_id] # Replace with your private subnet IDs
+  subnet_ids = [var.priv_sub_3a_id, var.priv_sub_4b_id] #private subnet ids here
 }
 
 resource "aws_db_instance" "mydb" {
