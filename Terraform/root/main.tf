@@ -33,3 +33,26 @@ module "database" {
   mydb_username    = var.mydb_username
   mydb_password    = var.mydb_password
 }
+
+module "loadbalancer" {
+  source         = "../modules/loadbalancer"
+  project_name   = module.vpc.project_name
+  alb_sg_id      = module.security-group.alb_sg_id
+  pub_sub_1a_id = module.vpc.pub_sub_1a_id
+  pub_sub_2b_id = module.vpc.pub_sub_2b_id
+  vpc_id         = module.vpc.vpc_id
+}
+
+module "autoscaling-group" {
+  source         = "../modules/autoscaling-group"
+  project_name   = module.vpc.project_name
+  webserver_sg_id   = module.security-group.webserver_sg_id
+  priv_sub_3a_id = module.vpc.priv_sub_3a_id
+  priv_sub_4b_id = module.vpc.priv_sub_4b_id
+  targetgroup_arn = module.loadbalancer.targetgroup_arn
+}
+
+
+
+
+
