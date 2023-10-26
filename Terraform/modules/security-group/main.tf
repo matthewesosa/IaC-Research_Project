@@ -25,8 +25,8 @@ resource "aws_security_group" "alb_sg" {
 }
 
 # webServer security group
-resource "aws_security_group" "webServer_sg" {
-  name        = "webServer_sg"
+resource "aws_security_group" "webserver_sg" {
+  name        = "webserver_sg"
   description = "allow http access on port 80 from alb_sg-(inbound), allow all traffic-(outbound)"
   vpc_id      = var.vpc_id
 
@@ -46,14 +46,14 @@ resource "aws_security_group" "webServer_sg" {
   }
 
   tags = {
-    Name = "webServer_sg"
+    Name = "webserver_sg"
   }
 }
 
 # database security group
 resource "aws_security_group" "mydb_sg" {
   name        = "mydb_sg"
-  description = "allow webServer access to mysql database on port 3306-(inbound); allow all traffic-(outbound)"
+  description = "allow webserver access to mysql database on port 3306-(inbound); allow all traffic-(outbound)"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -61,7 +61,7 @@ resource "aws_security_group" "mydb_sg" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.webServer_sg.id]
+    security_groups = [aws_security_group.webserver_sg.id]
   }
 
   egress {
