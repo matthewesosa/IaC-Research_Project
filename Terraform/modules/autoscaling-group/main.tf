@@ -1,48 +1,60 @@
-resource "aws_iam_role" "s3_bucket_role3" {
-  name = "${var.project_name}-Role3"
+# IAM Roles/Policies
+resource "aws_iam_role" "s3_bucket_role7" {
+  name = "${var.project_name}-Role7"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect = "Allow",
-      Principal = {
-        Service = "ec2.amazonaws.com"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
       },
-      Action = "sts:AssumeRole"
-    }]
-  })
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
 }
 
-resource "aws_iam_instance_profile" "s3_bucket_instance_profile3" {
-  name = "${var.project_name}-InstanceProfile3"
-  role = aws_iam_role.s3_bucket_role3.name
+# An IAM instance profile
+resource "aws_iam_instance_profile" "s3_bucket_instance_profile7" {
+  name = "S3BucketInstanceProfile7"
+  role = aws_iam_role.s3_bucket_role7.name
 }
 
-resource "aws_iam_policy" "s3_bucket_policy3" {
-  name        = "S3BucketPolicy3"
-  description = "IAM policy to permit webserver(s) to access S3."
-  #name_prefix = "${var.project_name}-"
+# This IAM policy permits the webServer(s)(EC2 instance(s)) to list items in S3
+resource "aws_iam_policy" "s3_bucket_policy7" {
+  name        = "S3BucketPolicy7"
+  description = "Allows EC2 instances to access S3"
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect = "Allow",
-      Action = [
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
         "s3:Get*",
-        "s3:List*",
+        "s3:List*"
       ],
-      Resource = [
+      "Resource": [
         "arn:aws:s3:::iac-webappbucket",
-        "arn:aws:s3:::iac-webappbucket/*",
-      ],
-    }]
-  })
+        "arn:aws:s3:::iac-webappbucket/*"
+      ]
+    }
+  ]
+}
+EOF
 }
 
-resource "aws_iam_role_policy_attachment" "attach_s3_bucket_policy" {
-  policy_arn = aws_iam_policy.s3_bucket_policy3.arn
-  role       = aws_iam_role.s3_bucket_role3.name
+# Attach the IAM role to the instance profile
+resource "aws_iam_role_policy_attachment" "s3_bucket_role_policy_attachment7" {
+  role       = aws_iam_role.s3_bucket_role7
+  policy_arn = aws_iam_policy.s3_bucket_policy7.arn
 }
+
 
 
 resource "aws_launch_configuration" "webserver_launch_config" {
@@ -51,7 +63,7 @@ resource "aws_launch_configuration" "webserver_launch_config" {
   instance_type = var.instance_type
   security_groups = [var.webserver_sg_id]
 
-  iam_instance_profile = aws_iam_instance_profile.s3_bucket_instance_profile3.name
+  iam_instance_profile = aws_iam_instance_profile.s3_bucket_instance_profile7.name
 
   user_data = <<-EOF
     #!/bin/bash
