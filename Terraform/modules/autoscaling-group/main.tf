@@ -51,7 +51,7 @@ EOF
 
 # Attach the IAM role to the instance profile
 resource "aws_iam_role_policy_attachment" "s3_bucket_role_policy_attachment7" {
-  role       = aws_iam_role.s3_bucket_role7
+  role       = aws_iam_role.s3_bucket_role7.name
   policy_arn = aws_iam_policy.s3_bucket_policy7.arn
 }
 
