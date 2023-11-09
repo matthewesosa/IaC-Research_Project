@@ -25,8 +25,8 @@ resource "aws_iam_instance_profile" "s3_bucket_instance_profile7" {
 }
 
 # This IAM policy permits the webServer(s)(EC2 instance(s)) to list items in S3
-resource "aws_iam_policy" "s3_bucket_policy7" {
-  name        = "S3BucketPolicy7"
+resource "aws_iam_policy" "s3_bucket_policy8" {
+  name        = "S3BucketPolicy8"
   description = "Allows EC2 instances to access S3"
 
   policy = <<EOF
@@ -52,7 +52,7 @@ EOF
 # Attach the IAM role to the instance profile
 resource "aws_iam_role_policy_attachment" "s3_bucket_role_policy_attachment7" {
   role       = aws_iam_role.s3_bucket_role7.name
-  policy_arn = aws_iam_policy.s3_bucket_policy7.arn
+  policy_arn = aws_iam_policy.s3_bucket_policy8.arn
 }
 
 
