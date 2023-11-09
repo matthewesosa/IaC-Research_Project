@@ -1,6 +1,6 @@
 # elastic ip for the nat-gateway in pub_sub_1a (first public subnet - in availability zone a)
 resource "aws_eip" "eip-nat-a" {
-  vpc    = true
+  domain    = "vpc"
 
   tags   = {
     Name = "eip-nat-a"
@@ -9,7 +9,7 @@ resource "aws_eip" "eip-nat-a" {
 
 # elastic ip for the nat-gateway in pub_sub_1a (second public subnet - in availability zone b)
 resource "aws_eip" "eip-nat-b" {
-  vpc    = true
+  domain    = "vpc"
 
   tags   = {
     Name = "eip-nat-b"
