@@ -10,14 +10,9 @@ The goal of this research project is to study and evaluate the effectiveness of 
 #
 The research aims to answer the following questions:
 
-• What are the neccessary software qualities that defines the effectiveness of Infrastructure as Code (IaC) tools in automating and managing cloud infrastructure ?
+•  How does AWS CloudFormation compare to Terraform regarding performance, developer experience (learnability, IDE support and community support) and maintainability?
 
-• What are the key features and functionalities of Terraform and AWS CloudFormation as Infrastructure as Code tools, and how do these features contribute to the ease of provisioning, managing, and scaling cloud resources on the AWS platform?
-
-• How does AWS Cloudformation compare to Terraform?
-  - Performanance: deployment time and scalability
-  - Developer Experience: learnability, IDE support and community support
-  - Maintainability 
+• What are the key features and functionalities of Terraform and AWS CloudFormation as Infrastructure as Code tools, and how do these features contribute to the ease of provisioning and managing resources on AWS cloud?
 
 #
 
