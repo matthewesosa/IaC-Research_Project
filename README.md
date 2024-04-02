@@ -1,4 +1,4 @@
-## Terraform and Cloudformation: A Comparative Study of Infrastructure as Code Tools on AWS
+## Terraform and Cloudformation: A Comparative Study of Infrastructure as Code Tools on AWS Cloud
 
 #
 Organizations often opt for cloud provisioning and configuration management tools as a means to streamline and automate the provisioning and configuration of their cloud resources. Two widely recognized tools for infrastructure automation are Terraform and CloudFormation, which excel at enabling the configuration, provisioning, and management of infrastructure as code.
